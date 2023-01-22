@@ -25,14 +25,12 @@ def main():
     insert_values_in_table(cursor, store_name_table, "stores")
     insert_values_in_table(cursor, payment_methods_table, "payment_methods")
     insert_values_in_table(cursor, products_table, "products")
-    # insert_values_in_table(cursor,staging_table_store_id,"staging_store_id")
-    # insert_values_in_table(cursor,staging_table_payment_id,"staging_payment_method_id")
     cursor.execute(f"SELECT COUNT(*) FROM transactions")
     count = cursor.fetchone()[0]
     count_variable = int(count)
     sales_table["transaction_id"] += count_variable
-    # insert_values_in_table(cursor, sales_table, "sales")
     load_transactions_to_db(cursor, transactions_table)
+
     load_sales_to_db(cursor, sales_table)
     cursor.close()
     connecting_to_db.close()
@@ -72,7 +70,7 @@ def load_transactions_to_db(cursor, df):
     try:
         for x in tuples:
             cursor.execute(
-                query=f"""INSERT INTO transactions(timestamp, store_id, total_price, payment_method_id) VALUES ('{x[0]}',
+                f"""INSERT INTO transactions(timestamp, store_id, total_price, payment_method_id) VALUES ('{x[0]}',
             (SELECT store_id FROM stores WHERE stores.store_name = '{x[1]}'), {x[2]},
             (SELECT payment_method_id FROM payment_methods WHERE payment_methods.payment_method = '{x[3]}'));"""
             )
@@ -93,7 +91,7 @@ def load_sales_to_db(cursor, df):
     try:
         for x in tuples:
             cursor.execute(
-                query=f"""INSERT INTO sales(transaction_id,product_id) VALUES (
+                f"""INSERT INTO sales(transaction_id,product_id) VALUES (
             (SELECT transaction_id FROM transactions WHERE transactions.transaction_id = '{x[0]}'),
             (SELECT product_id FROM products WHERE products.product_name = '{x[1]}'));"""
             )

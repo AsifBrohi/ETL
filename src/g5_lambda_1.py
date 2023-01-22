@@ -115,12 +115,6 @@ transactions_table = pd.DataFrame(
 )
 
 # 5.
-def retrieve_col_length(cursor, table):
-    cursor.execute(f"SELECT COUNT(*) FROM {table}")
-    count = cursor.fetchone()[0]
-    count_variable = int(count)
-    return count_variable
-
 
 sales_table = pd.DataFrame(clean_split_df, columns=["transaction_id", "product_name"])
 sales_table["transaction_id"] = sales_table.index + 1
